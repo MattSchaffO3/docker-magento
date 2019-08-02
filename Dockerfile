@@ -3,7 +3,6 @@ FROM alexcheng/apache2-php5:5.6.33
 ENV MAGENTO_VERSION 1.9.3.8
 
 RUN a2enmod rewrite
-RUN a2enmod headers
 
 ENV INSTALL_DIR /var/www/html
 
@@ -15,6 +14,7 @@ RUN mkdir -p $INSTALL_DIR
 #     mv magento-mirror-$MAGENTO_VERSION/* magento-mirror-$MAGENTO_VERSION/.htaccess $INSTALL_DIR
 
 COPY ./src/ $INSTALL_DIR
+COPY ./local.xml $INSTALL_DIR/app/etc/
 
 RUN chown -R www-data:www-data $INSTALL_DIR
 
@@ -42,4 +42,6 @@ RUN mv ~/bin/modman /usr/local/bin
 
 WORKDIR $INSTALL_DIR
 
+RUN a2enmod headers
+RUN service apache2 restart
 #COPY redis.conf /var/www/htdocs/app/etc/
