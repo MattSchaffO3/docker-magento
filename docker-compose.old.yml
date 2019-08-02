@@ -2,7 +2,7 @@ version: '3.0'
 
 services:
   web:
-    build: .
+    image: alexcheng/magento
     ports:
       - "80:80"
     links:
@@ -22,4 +22,4 @@ services:
     links:
       - db     
 volumes:
-  db-data:         
+  db-data:   

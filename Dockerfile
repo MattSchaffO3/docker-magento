@@ -3,13 +3,18 @@ FROM alexcheng/apache2-php5:5.6.33
 ENV MAGENTO_VERSION 1.9.3.8
 
 RUN a2enmod rewrite
+RUN a2enmod headers
 
 ENV INSTALL_DIR /var/www/html
 
-RUN cd /tmp && \
-    curl https://codeload.github.com/OpenMage/magento-mirror/tar.gz/$MAGENTO_VERSION -o $MAGENTO_VERSION.tar.gz && \
-    tar xvf $MAGENTO_VERSION.tar.gz && \
-    mv magento-mirror-$MAGENTO_VERSION/* magento-mirror-$MAGENTO_VERSION/.htaccess $INSTALL_DIR
+RUN mkdir -p $INSTALL_DIR
+
+# RUN cd /tmp && \
+#     curl https://codeload.github.com/OpenMage/magento-mirror/tar.gz/$MAGENTO_VERSION -o $MAGENTO_VERSION.tar.gz && \
+#     tar xvf $MAGENTO_VERSION.tar.gz && \
+#     mv magento-mirror-$MAGENTO_VERSION/* magento-mirror-$MAGENTO_VERSION/.htaccess $INSTALL_DIR
+
+COPY ./src/ $INSTALL_DIR
 
 RUN chown -R www-data:www-data $INSTALL_DIR
 
@@ -23,6 +28,10 @@ RUN docker-php-ext-configure gd --with-jpeg-dir=/usr/lib/ --with-freetype-dir=/u
 
 COPY ./bin/install-magento /usr/local/bin/install-magento
 RUN chmod +x /usr/local/bin/install-magento
+
+COPY ./sampledata/whhawip.sql.gz /opt/whhawip.sql.gz
+COPY ./bin/install-whha-db /usr/local/bin/install-whha-db
+RUN chmod +x /usr/local/bin/install-whha-db
 
 COPY ./sampledata/magento-sample-data-1.9.1.0.tgz /opt/
 COPY ./bin/install-sampledata-1.9 /usr/local/bin/install-sampledata
