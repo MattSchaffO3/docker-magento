@@ -1,3 +1,6 @@
 #!/usr/bin/env bash
 
+# Import DB.
 zcat /opt/whhawip.sql.gz | mysql -h $MYSQL_HOST -u root -p$MYSQL_ROOT_PASSWORD $MYSQL_DATABASE
+# Change base URLs.
+mysql -h $MYSQL_HOST -u root -p$MYSQL_ROOT_PASSWORD $MYSQL_DATABASE -e "UPDATE core_config_data SET value = 'http://local.magento/' WHERE path = 'web/unsecure/base_url' OR path = 'web/secure/base_url';"
